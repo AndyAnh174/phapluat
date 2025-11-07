@@ -22,13 +22,6 @@ COPY .env* ./
 # Environment variables will be read from .env file during build
 RUN pnpm run build
 
-# Create non-root user in builder stage for ownership
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-
-# Change ownership in builder stage (faster than in production stage)
-RUN chown -R nextjs:nodejs /app
-
 # Production stage
 FROM node:20-alpine AS production
 
@@ -38,7 +31,7 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
 
-# Copy built application from builder (ownership is already set in builder stage)
+# Copy built application from builder (set ownership during copy)
 COPY --chown=nextjs:nodejs --from=builder /app/.next ./.next
 COPY --chown=nextjs:nodejs --from=builder /app/public ./public
 COPY --chown=nextjs:nodejs --from=builder /app/next.config.ts ./next.config.ts
