@@ -1,0 +1,33 @@
+[
+  {
+    "sessionId": "690d40f513e0baabf68dba42",
+    "user": {
+      "name": "Ho Viet Anh",
+      "email": "23133002@student.hcmute.edu.vn"
+    },
+    "examSet": {
+      "name": "Test Exam Set 1 (Copy)"
+    },
+    "score": 100,
+    "startedAt": "2025-11-07T00:44:37.532Z",
+    "submittedAt": "2025-11-07T00:44:55.981Z",
+    "answers": [
+      {
+        "question": {
+          "content": "123",
+          "correctAnswer": "A"
+        },
+        "selectedAnswer": "A",
+        "isCorrect": true
+      },
+      {
+        "question": {
+          "content": "zxcv",
+          "correctAnswer": "B"
+        },
+        "selectedAnswer": "B",
+        "isCorrect": true
+      }
+    ]
+  }
+]

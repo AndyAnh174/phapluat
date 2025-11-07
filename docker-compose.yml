@@ -1,0 +1,90 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: hcmute-exam-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: hcmute_exam
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - hcmute-exam-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: hcmute-exam-server
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    environment:
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/hcmute_exam?authSource=admin
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - hcmute-exam-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 404 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: hcmute-exam-client
+    restart: unless-stopped
+    env_file:
+      - ./client/.env
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - server
+    networks:
+      - hcmute-exam-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: hcmute-exam-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - client
+      - server
+    networks:
+      - hcmute-exam-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  hcmute-exam-network:
+    driver: bridge
+
