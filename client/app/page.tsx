@@ -6,7 +6,7 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { authUtils } from '@/lib/auth';
 import { useAuth } from '@/contexts/AuthContext';
-
+import thumbnail from '@/assets/THUMBNAIL@4x.png';
 function OAuthCallbackHandler() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -48,19 +48,32 @@ export default function Home() {
       </Suspense>
 
       {/* Hero Section - Law Day Information */}
-      <section className="py-16 px-4 bg-gray-50">
+      {/* Banner image: remove top margin so it sits flush, make full-width within container */}
+      <img src={thumbnail.src} alt="Thumbnail" className="block mx-auto w-full object-cover" />
+      <section className="pt-0 pb-16 px-4 bg-gray-50">
         <div className="container mx-auto max-w-5xl">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <div className="inline-block mb-4">
+            {/* <div className="inline-block mb-4">
               <div className="h-1 w-24 bg-[#C8102E] mx-auto mb-3"></div>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1a1a1a] mb-4 tracking-tight">
-              Ngày Pháp Luật Việt Nam
+            </div> */}
+            <h1 className="text-4xl md:text-5xl font-bold text-[#1a1a1a] mb-3 tracking-tight">
+              Ngày Pháp luật Việt Nam
             </h1>
             <div className="h-1 w-24 bg-[#C8102E] mx-auto mb-4"></div>
-            <p className="text-lg md:text-xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed">
-              Ngày 09/11 hàng năm được chọn là Ngày Pháp luật nước Cộng hòa xã hội chủ nghĩa Việt Nam
+
+            {/* Styled date badge */}
+            <div className="mb-4">
+              <time
+                dateTime="2025-11-09"
+                className="inline-block text-sm text-[#C8102E] bg-[#FFF1F2] px-3 py-1 rounded-full font-semibold"
+              >
+                9 tháng 11
+              </time>
+            </div>
+
+            <p className="text-base md:text-lg text-gray-700 font-medium max-w-2xl mx-auto leading-relaxed">
+              Ngày 9 tháng 11 hằng năm được chọn là Ngày Pháp luật của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam.
             </p>
           </div>
 
@@ -107,12 +120,12 @@ export default function Home() {
       <footer className="py-8 px-4 border-t bg-gray-50">
         <div className="container mx-auto text-center">
           <p className="text-sm text-gray-600 mb-2">
-            © 2024 HCMUTE - Hệ thống Trắc nghiệm và Sách Di sản
+            © {new Date().getFullYear()} HCMUTE - Hệ thống Trắc nghiệm và Sách Di sản Pháp Luật
           </p>
           <p className="text-sm text-gray-600">
             Phát triển bởi{' '}
             <a
-              href="https://hcmutertic.com/"
+              href="https://www.facebook.com/hcmute.rtic"
             target="_blank"
             rel="noopener noreferrer"
               className="text-[#C8102E] hover:text-[#A00D26] font-semibold transition-colors"

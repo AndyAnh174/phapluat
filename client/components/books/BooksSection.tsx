@@ -33,7 +33,7 @@ export function BooksSection() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-[#8B0000] mb-3">
-              BỘ SÁCH &quot;DI SẢN HỒ CHÍ MINH&quot;
+              BỘ SÁCH &quot;PHÁP LUẬT&quot;
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
@@ -52,7 +52,7 @@ export function BooksSection() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-[#8B0000] mb-3">
-              BỘ SÁCH &quot;DI SẢN HỒ CHÍ MINH&quot;
+              BỘ SÁCH &quot;PHÁP LUẬT&quot;
             </h2>
           </div>
           <Alert variant="destructive">
@@ -69,7 +69,7 @@ export function BooksSection() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-[#8B0000] mb-3">
-              BỘ SÁCH &quot;DI SẢN HỒ CHÍ MINH&quot;
+              BỘ SÁCH &quot;PHÁP LUẬT&quot;
             </h2>
           </div>
           <p className="text-center text-muted-foreground">Chưa có sách nào được công bố</p>
@@ -87,13 +87,13 @@ export function BooksSection() {
             <div className="w-3 h-3 bg-yellow-400 rounded-full border-2 border-white shadow-sm"></div>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-[#8B0000] mb-3">
-            BỘ SÁCH &quot;DI SẢN HỒ CHÍ MINH&quot;
+            BỘ SÁCH &quot;PHÁP LUẬT&quot;
           </h2>
           <div className="flex items-center justify-center mb-4">
             <div className="w-24 h-1 bg-yellow-400"></div>
           </div>
           <p className="text-gray-700 text-lg max-w-3xl mx-auto">
-            Tuyển tập đầy đủ các tác phẩm, tư tưởng và di sản tinh thần vô giá của Chủ tịch Hồ Chí Minh
+            Tuyển chọn  các văn bản pháp luật hiện hành, cẩm nang hướng dẫn thi hành và các ấn phẩm chuyên sâu phục vụ nghiên cứu, hành nghề và ứng dụng pháp luật tại Việt Nam.
           </p>
         </div>
 
