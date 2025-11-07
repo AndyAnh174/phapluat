@@ -113,28 +113,41 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Request() req, @Res() res: Response): Promise<void> {
-    const googleUser = req.user;
+    try {
+      const googleUser = req.user;
 
-    // Find or create user in database
-    const user = await this.usersService.findOrCreate(
-      googleUser.googleId,
-      googleUser.email,
-      googleUser.name,
-    );
+      // Find or create user in database
+      const user = await this.usersService.findOrCreate(
+        googleUser.googleId,
+        googleUser.email,
+        googleUser.name,
+      );
 
-    // Generate JWT token
-    const payload = {
-      userId: (user._id as any).toString(),
-      email: user.email,
-      name: user.name,
-      role: user.role,
-    };
+      // Generate JWT token
+      const payload = {
+        userId: (user._id as any).toString(),
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      };
 
-    const accessToken = this.jwtService.sign(payload);
+      const accessToken = this.jwtService.sign(payload);
 
-    // Redirect to frontend with token (adjust URL as needed)
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
-    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}`);
+      // Redirect to frontend with token (adjust URL as needed)
+      const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}`);
+    } catch (error) {
+      // Handle errors (e.g., invalid email domain)
+      const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+      const errorMessage = error.message || 'Đăng nhập thất bại';
+      
+      // Check if it's an email domain error
+      if (error.message && error.message.includes('HCMUTE')) {
+        res.redirect(`${frontendUrl}/auth/callback?error=${encodeURIComponent('Tài khoản email của bạn không thuộc hệ thống HCMUTE. Vui lòng sử dụng tài khoản Google có đuôi @hcmute.edu.vn hoặc @student.hcmute.edu.vn để đăng nhập.')}`);
+      } else {
+        res.redirect(`${frontendUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
+      }
+    }
   }
 }
 

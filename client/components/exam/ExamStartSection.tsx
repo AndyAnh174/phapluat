@@ -158,13 +158,16 @@ export function ExamStartSection() {
                 )}
               </Button>
               
-              {!isAuthenticated && (
-                <div className="text-center p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold text-[#C8102E]">Lưu ý:</span> Bạn cần đăng nhập bằng tài khoản Google HCMUTE để làm bài thi
-                  </p>
-                </div>
-              )}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800 mb-2">
+                  <span className="font-semibold text-[#C8102E]">Lưu ý:</span> {!isAuthenticated ? 'Bạn cần đăng nhập bằng tài khoản Google HCMUTE để làm bài thi' : 'Hệ thống chỉ chấp nhận tài khoản Google HCMUTE'}
+                </p>
+                <p className="text-xs text-blue-700 mb-1">Hệ thống chỉ chấp nhận tài khoản có đuôi email:</p>
+                <ul className="text-xs text-blue-700 list-disc list-inside space-y-0.5 ml-2">
+                  <li>@hcmute.edu.vn (Giảng viên, Cán bộ HCMUTE)</li>
+                  <li>@student.hcmute.edu.vn (Sinh viên HCMUTE)</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

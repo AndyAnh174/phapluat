@@ -13,6 +13,14 @@ function OAuthCallbackHandler() {
   const { setUserType, setStudentProfile } = useAuth();
 
   useEffect(() => {
+    // Check for error in query params first
+    const errorParam = searchParams.get('error');
+    if (errorParam) {
+      // Redirect to callback page to show error
+      router.push(`/auth/callback?error=${encodeURIComponent(errorParam)}`);
+      return;
+    }
+
     // Handle OAuth callback
     const token = searchParams.get('token');
     if (token) {
@@ -31,7 +39,31 @@ function OAuthCallbackHandler() {
           })
           .catch((err) => {
             console.error('Failed to fetch profile:', err);
-            router.push('/');
+            // Check if error is about email domain
+            const errorMessage = err.response?.data?.message || err.message || '';
+            const isEmailError = 
+              errorMessage.includes('email') || 
+              errorMessage.includes('HCMUTE') || 
+              errorMessage.includes('domain') ||
+              errorMessage.includes('tài khoản') ||
+              err.response?.status === 403;
+            
+            if (isEmailError) {
+              // Redirect to callback page to show email error
+              router.push('/auth/callback?error=' + encodeURIComponent('Tài khoản email của bạn không thuộc hệ thống HCMUTE. Vui lòng sử dụng tài khoản Google có đuôi @hcmute.edu.vn để đăng nhập.'));
+            } else if (err.message && err.message.includes('Network Error')) {
+              console.error('Server không phản hồi. Vui lòng kiểm tra server có đang chạy không.');
+              // Still redirect to home after a delay to avoid infinite loop
+              setTimeout(() => {
+                router.push('/');
+              }, 2000);
+            } else {
+              // Other errors, redirect to callback page
+              router.push('/auth/callback?error=' + encodeURIComponent('Không thể xác thực tài khoản. Vui lòng thử lại.'));
+            }
+            // Clear invalid token
+            authUtils.clearToken();
+            setUserType(null);
           });
       });
     }

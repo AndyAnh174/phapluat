@@ -27,6 +27,28 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
+    // Handle OAuth callback errors - redirect to frontend with error message
+    if (request.url && request.url.includes('/auth/google/callback')) {
+      const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+      let errorMessage = 'Đăng nhập thất bại';
+      
+      if (exception instanceof Error) {
+        const exceptionMessage = exception.message || '';
+        // Check if it's an email domain error
+        if (exceptionMessage.includes('HCMUTE') || exceptionMessage.includes('email')) {
+          errorMessage = 'Tài khoản email của bạn không thuộc hệ thống HCMUTE. Vui lòng sử dụng tài khoản Google có đuôi @hcmute.edu.vn hoặc @student.hcmute.edu.vn để đăng nhập.';
+        } else {
+          errorMessage = exceptionMessage;
+        }
+      } else if (typeof message === 'string') {
+        errorMessage = message;
+      } else if (typeof message === 'object' && (message as any).message) {
+        errorMessage = (message as any).message;
+      }
+      
+      return response.redirect(`${frontendUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
+    }
+
     const isDevelopment =
       this.configService.get<string>('NODE_ENV') === 'development';
 

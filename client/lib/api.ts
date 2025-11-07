@@ -10,6 +10,7 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 seconds timeout
 });
 
 // Request interceptor to add auth token
@@ -30,6 +31,16 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
+    // Handle network errors
+    if (!error.response) {
+      console.error('Network Error:', error.message);
+      // Don't show alert on homepage to avoid spam
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (currentPath !== '/' && !currentPath.startsWith('/auth/callback')) {
+        console.error('Không thể kết nối đến server. Vui lòng kiểm tra server có đang chạy không.');
+      }
+    }
+    
     if (error.response?.status === 401) {
       // Clear token on unauthorized
       if (typeof window !== 'undefined') {

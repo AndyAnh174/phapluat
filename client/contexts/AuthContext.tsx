@@ -35,16 +35,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .getStudentProfile()
         .then(setStudentProfile)
         .catch((err) => {
+          // Handle network errors gracefully
+          const isNetworkError = !err.response && err.message && err.message.includes('Network Error');
+          
           // If profile fetch fails, only clear auth if we're on a protected route
           // On homepage, just silently fail
           const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
           const isProtectedRoute = currentPath.startsWith('/student/exam') || currentPath.startsWith('/login');
           
-          if (isProtectedRoute) {
+          if (isNetworkError && isProtectedRoute) {
+            // Network error on protected route - server might be down
+            console.error('Không thể kết nối đến server. Vui lòng kiểm tra server có đang chạy không.');
+          }
+          
+          if (isProtectedRoute && !isNetworkError) {
+            // Only clear token if it's an auth error, not network error
             authUtils.clearToken();
             setUserTypeState(null);
             setIsAuthenticated(false);
-          } else {
+          } else if (!isProtectedRoute) {
             // On homepage, just clear the state but don't redirect
             setUserTypeState(null);
             setIsAuthenticated(false);
