@@ -18,6 +18,13 @@ COPY . .
 # Build application
 RUN pnpm run build
 
+# Create non-root user in builder stage for ownership
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001
+
+# Change ownership in builder stage (faster than in production stage)
+RUN chown -R nestjs:nodejs /app
+
 # Production stage
 FROM node:20-alpine AS production
 
@@ -36,12 +43,9 @@ COPY package*.json pnpm-lock.yaml* ./
 # Install production dependencies only
 RUN pnpm install --prod --frozen-lockfile
 
-# Copy built application from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-
-# Change ownership to non-root user
-RUN chown -R nestjs:nodejs /app
+# Copy built application from builder (ownership is already set in builder stage)
+COPY --chown=nestjs:nodejs --from=builder /app/dist ./dist
+COPY --chown=nestjs:nodejs --from=builder /app/node_modules ./node_modules
 
 # Switch to non-root user
 USER nestjs
